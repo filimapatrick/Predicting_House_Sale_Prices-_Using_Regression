@@ -1,227 +1,110 @@
-# House Sale Price Prediction Using Regression
+# House Sale Price Prediction (Regression)
 
-A comprehensive machine learning project that predicts residential home sale prices using advanced regression techniques and feature engineering.
+This project explores the Ames Housing dataset and prepares the data for regression modeling. The notebook focuses on data loading, missing-value handling, preprocessing pipelines, and exploratory analysis.
 
-## 📊 Project Overview
+## Overview
 
-This project builds predictive models to estimate house sale prices based on 79 explanatory variables describing various aspects of residential homes in Ames, Iowa. The goal is to develop accurate regression models that can predict property values from features such as location, size, quality, and amenities.
+The goal is to understand which features drive house prices and to prepare a clean, model-ready dataset. The work is based on 79 explanatory variables describing residential homes in Ames, Iowa.
 
-## 🎯 Objectives
+## Dataset
 
-- **Primary Goal**: Build accurate regression models to predict `SalePrice` of residential properties
-- **Secondary Goals**:
-  - Perform comprehensive exploratory data analysis (EDA)
-  - Handle missing values and outliers effectively
-  - Engineer relevant features to improve model performance
-  - Compare multiple regression algorithms
-  - Optimize hyperparameters for best results
+Files in this repository:
 
-## 📁 Dataset Description
+- `train.csv` - Training data with 1,460 rows and the target `SalePrice`
+- `test.csv` - Test data for prediction
+- `sample_submission.csv` - Submission format template
+- `data_description.txt` - Detailed field definitions for all features
 
-### Files
-- **`train.csv`** - Training dataset with 1,460 observations and 81 features (including target)
-- **`test.csv`** - Test dataset for predictions
-- **`sample_submission.csv`** - Format template for competition submissions
-- **`data_description.txt`** - Detailed description of all 79 features
+Target variable:
 
-### Target Variable
-- **`SalePrice`** - The property's sale price in dollars (continuous variable)
+- `SalePrice` - Sale price of the property in dollars
 
-### Feature Categories
+Feature groups:
 
-#### Property Characteristics
-- **Physical Attributes**: Lot area, lot shape, land contour, dwelling type
-- **Building Details**: Year built, year remodeled, roof style/material, exterior materials
-- **Room Information**: Number of bedrooms, bathrooms, kitchens, total rooms
-- **Area Measurements**: Living area, basement area, garage area, porch areas
+- Property characteristics (lot size, shape, building type)
+- Area measurements (living area, basement, garage, porches)
+- Quality ratings (overall, kitchen, basement, garage)
+- Location and zoning (neighborhood, zoning class, proximity to features)
+- Amenities (garage, pool, fence, fireplace, air conditioning)
 
-#### Quality Ratings
-- **Overall Quality** (`OverallQual`): 1-10 scale rating material and finish
-- **Overall Condition** (`OverallCond`): 1-10 scale rating property condition
-- **Kitchen Quality**, **Basement Quality**, **Garage Quality**, etc.
+## Notebook Workflow
 
-#### Location Features
-- **Neighborhood**: 25 different neighborhoods within Ames city limits
-- **Proximity Conditions**: Distance to arterial streets, railroads, parks
-- **Zoning Classification**: Residential, commercial, agricultural zones
+The main analysis lives in `Training.ipynb` and follows this flow:
 
-#### Amenities & Features
-- **Garage**: Type, size, year built, finish, condition
-- **Basement**: Type, exposure, finished area, condition
-- **Utilities**: Heating type/quality, central air, electrical system
-- **Outdoor**: Pool, deck, porch, fence quality
+1. Load the data and review basic structure.
+2. Separate target and features (`SalePrice` vs. predictors).
+3. Identify numeric and categorical columns.
+4. Build preprocessing pipelines:
+   - Numeric: median imputation + standard scaling
+   - Categorical: most-frequent imputation + one-hot encoding
+5. Combine with `ColumnTransformer` and transform the data.
+6. Clean key missing values using domain-aware defaults:
+   - Pool, fence, alley, fireplace, garage, and basement indicators
+   - Masonry veneer type/area
+   - `LotFrontage` imputed by neighborhood median
+   - `Electrical` imputed by mode
+7. Perform EDA:
+   - Target distribution and skew
+   - Correlations with `SalePrice`
+   - Heatmap of top correlated features
+   - Scatter plots and box plots for key drivers
 
-## 🔧 Technical Stack
+## Key EDA Focus
 
-### Libraries & Tools
-```python
-- pandas          # Data manipulation
-- numpy           # Numerical computations
-- scikit-learn    # Machine learning models & preprocessing
-- matplotlib      # Data visualization
-- seaborn         # Statistical visualizations
-```
+- Top numeric correlations with `SalePrice`
+- Size and quality features (e.g., `OverallQual`, `GrLivArea`, `TotalBsmtSF`)
+- Neighborhood-level price differences
+- Multicollinearity checks among numeric predictors
 
-### Machine Learning Pipeline
-```
-Data Loading → Data Cleaning → EDA → Feature Engineering → 
-Preprocessing → Model Training → Evaluation → Prediction
-```
+## Requirements
 
-## 🚀 Getting Started
+Python libraries used in the notebook:
 
-### Installation
+- pandas
+- numpy
+- scikit-learn
+- matplotlib
+- seaborn
 
-1. **Clone the repository**
+Install with:
+
 ```bash
-cd /path/to/project
+pip install pandas numpy scikit-learn matplotlib seaborn
 ```
 
-2. **Install dependencies**
-```bash
-pip install pandas scikit-learn matplotlib seaborn numpy
-```
+## How to Run
 
-### Running the Analysis
+Open and run the notebook:
 
-Open and run the Jupyter notebook:
 ```bash
 jupyter notebook Training.ipynb
 ```
 
-Or use VS Code with Jupyter extension to run cells interactively.
+Or run in VS Code with the Jupyter extension.
 
-## 📈 Methodology
-
-### 1. Data Loading & Initial Exploration
-- Load training and test datasets
-- Examine data structure, types, and basic statistics
-- Identify data quality issues
-
-### 2. Data Cleaning & Preprocessing
-
-#### Missing Value Treatment
-- **Categorical Features**: Fill with meaningful defaults (e.g., 'NoGarage', 'NoBasement')
-- **Numerical Features**: Fill with median, mean, or domain-specific values
-- **LotFrontage**: Impute by neighborhood median (location-based)
-- **Garage/Basement Features**: Group-impute related features
-
-#### Feature Engineering
-- Separate numerical and categorical columns
-- Create preprocessing pipelines:
-  - **Numerical Pipeline**: SimpleImputer (median) → StandardScaler
-  - **Categorical Pipeline**: SimpleImputer (most_frequent) → OneHotEncoder
-
-### 3. Exploratory Data Analysis (EDA)
-
-#### Statistical Analysis
-- Distribution analysis of `SalePrice` (check for skewness)
-- Summary statistics for all numerical features
-- Correlation matrix to identify feature relationships
-
-#### Visualizations
-- **Histograms**: Target variable distribution
-- **Heatmaps**: Correlation between features and target
-- **Scatter Plots**: Key predictors (OverallQual, GrLivArea) vs SalePrice
-- **Box Plots**: Categorical features (Neighborhood) vs SalePrice
-
-#### Key Insights
-- **Top Correlated Features**: 
-  - OverallQual (Overall Quality)
-  - GrLivArea (Above Ground Living Area)
-  - GarageCars (Garage Capacity)
-  - GarageArea (Garage Size)
-  - TotalBsmtSF (Basement Area)
-  
-- **Multicollinearity Detection**: Identify highly correlated feature pairs (>0.8)
-- **Neighborhood Impact**: Significant price variation across neighborhoods
-
-### 4. Model Development
-
-#### Regression Algorithms
-- Linear Regression (baseline)
-- Ridge Regression (L2 regularization)
-- Lasso Regression (L1 regularization, feature selection)
-- Random Forest Regressor
-- Gradient Boosting Regressor
-- XGBoost (if implemented)
-
-#### Model Evaluation Metrics
-- **RMSE** (Root Mean Squared Error): Primary metric
-- **MAE** (Mean Absolute Error): Average prediction error
-- **R² Score**: Variance explained by the model
-- **Cross-Validation**: K-fold CV for robust evaluation
-
-### 5. Prediction & Submission
-- Apply best model to test set
-- Generate predictions in submission format
-- Export to `sample_submission.csv`
-
-## 📊 Key Features Analysis
-
-### Most Influential Features
-1. **OverallQual** - Overall material and finish quality
-2. **GrLivArea** - Above ground living area square footage
-3. **GarageCars** - Size of garage in car capacity
-4. **GarageArea** - Size of garage in square feet
-5. **TotalBsmtSF** - Total square feet of basement area
-6. **1stFlrSF** - First floor square feet
-7. **YearBuilt** - Original construction date
-8. **FullBath** - Full bathrooms above grade
-
-### Feature Importance Considerations
-- Quality ratings have strong positive correlation with price
-- Size-related features (living area, basement, garage) are critical
-- Location (neighborhood) significantly affects pricing
-- Age-related features (YearBuilt, YearRemodAdd) impact value
-
-## 📝 Project Structure
+## Project Structure
 
 ```
 Training/
-├── train.csv                 # Training data (1,460 samples)
-├── test.csv                  # Test data for predictions
-├── sample_submission.csv     # Submission format template
-├── data_description.txt      # Feature descriptions
-├── Training.ipynb            # Main analysis notebook
-└── README.md                 # Project documentation (this file)
+├── train.csv
+├── test.csv
+├── sample_submission.csv
+├── data_description.txt
+├── Training.ipynb
+└── README.md
 ```
 
-## 🎓 Learning Outcomes
+## Notes
 
-This project demonstrates:
-- **Data Preprocessing**: Handling missing values, encoding, scaling
-- **Feature Engineering**: Creating meaningful features from raw data
-- **Exploratory Data Analysis**: Understanding data patterns and relationships
-- **Pipeline Construction**: Building robust ML pipelines with scikit-learn
-- **Model Selection**: Comparing multiple regression algorithms
-- **Hyperparameter Tuning**: Optimizing model performance
-- **Evaluation**: Using appropriate metrics for regression tasks
+- This notebook prepares data for regression modeling but does not yet train or evaluate a model.
+- The dataset is the same as Kaggle's "House Prices: Advanced Regression Techniques" competition.
 
-## 🔍 Future Enhancements
-
-- [ ] Advanced feature engineering (polynomial features, interactions)
-- [ ] Ensemble methods (stacking, blending multiple models)
-- [ ] Hyperparameter optimization using GridSearchCV/RandomizedSearchCV
-- [ ] Feature selection techniques (RFE, LASSO-based selection)
-- [ ] Outlier detection and treatment
-- [ ] Log transformation of skewed features
-- [ ] Deep learning approaches (Neural Networks)
-
-## 📚 References
-
-- **Dataset**: Ames Housing Dataset (alternative to Boston Housing)
-- **Competition**: Based on Kaggle's House Prices: Advanced Regression Techniques
-- **Documentation**: [scikit-learn](https://scikit-learn.org/), [pandas](https://pandas.pydata.org/)
-
-## 👤 Author
+## Author
 
 Patrick Filima
 
-## 📄 License
+## License
 
-This project is open-source and available for educational purposes.
+Open for educational use.
 
----
-
-**Last Updated**: February 2026
+Last updated: 2026-02-06
